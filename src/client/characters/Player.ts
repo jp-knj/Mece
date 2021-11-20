@@ -29,13 +29,13 @@ declare global {
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   public keyE!: Phaser.Input.Keyboard.Key
 
-  private _playerBehavior = PlayerBehavior.IDLE
-  set playerBehaivor(playerBehavior: PlayerBehavior) {
-    this._playerBehavior = playerBehavior
-  }
-  get playerBehavior() {
-    return this.playerBehavior
-  }
+    private _playerBehavior = PlayerBehavior.IDLE
+    set playerBehavior(playerBehavior: PlayerBehavior) {
+        this._playerBehavior = playerBehavior
+    }
+    get playerBehavior() {
+        return this._playerBehavior
+    }
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene, x, y, texture, frame)
 
@@ -51,7 +51,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const item = playerSelector.selectedItem
 
     switch (this.playerBehavior) {
-      case playerBehavior.IDLE:
+      case PlayerBehavior.IDLE:
         // if press E in front of selected item (chair)
         if (Phaser.Input.Keyboard.JustDown(this.keyE) && item) {
           /**
@@ -118,7 +118,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
           const parts = this.anims.currentAnim.key.split('_')
           parts[1] = 'idle'
           this.play(parts.join('_'), true)
-          this.PlayerBehavior = PlayerState.IDLE
+          this.playerBehavior = PlayerBehavior.IDLE
           playerSelector.setPosition(this.x, this.y)
           playerSelector.update(this, cursors)
         }

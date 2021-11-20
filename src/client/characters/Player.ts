@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import PlayerSelector from './PlayerSelector'
+import { PlayerBehavior } from '../../types/PlayerBehavior'
 
 export enum PlayerState {
   IDLE,
@@ -28,14 +29,13 @@ declare global {
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   public keyE!: Phaser.Input.Keyboard.Key
 
-  private _playerState = PlayerState.IDLE
-  set playerState(playerState: PlayerState) {
-    this._playerState = playerState
+  private _playerBehavior = PlayerBehavior.IDLE
+  set playerBehaivor(playerBehavior: PlayerBehavior) {
+    this._playerBehavior = playerBehavior
   }
-  get playerState() {
-    return this._playerState
+  get playerBehavior() {
+    return this.playerBehavior
   }
-
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene, x, y, texture, frame)
 
@@ -50,8 +50,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     const item = playerSelector.selectedItem
 
-    switch (this.playerState) {
-      case PlayerState.IDLE:
+    switch (this.playerBehavior) {
+      case playerBehavior.IDLE:
         // if press E in front of selected item (chair)
         if (Phaser.Input.Keyboard.JustDown(this.keyE) && item) {
           /**
@@ -76,7 +76,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
           // set up new dialog as player sits down
           item.clearDialogBox()
           item.setDialogBox('Press E to leave', 95)
-          this.playerState = PlayerState.SITTING
+          this.playerBehaivor = PlayerBehavior.SITTING
           return
         }
 
@@ -112,13 +112,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         }
         break
 
-      case PlayerState.SITTING:
+      case PlayerBehavior.SITTING:
         // back to idle if player press E while sitting
         if (Phaser.Input.Keyboard.JustDown(this.keyE)) {
           const parts = this.anims.currentAnim.key.split('_')
           parts[1] = 'idle'
           this.play(parts.join('_'), true)
-          this.playerState = PlayerState.IDLE
+          this.PlayerBehavior = PlayerState.IDLE
           playerSelector.setPosition(this.x, this.y)
           playerSelector.update(this, cursors)
         }

@@ -2,18 +2,20 @@ import Phaser from 'phaser'
 
 export default class Item extends Phaser.Physics.Arcade.Sprite {
   private dialogBox!: Phaser.GameObjects.Container
-  private _itemDirection!: string
+
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene, x, y, texture, frame)
+
     // add a container on top of everything which we can add text in later
     this.dialogBox = this.scene.add.container().setDepth(10000)
   }
 
-  set itemDirection(direction:string) {
+  private _itemDirection!: string
+  set itemDirection(direction: string) {
     this._itemDirection = direction
   }
   get itemDirection() {
-   return this._itemDirection
+    return this._itemDirection
   }
 
   // add dialog box into the item container

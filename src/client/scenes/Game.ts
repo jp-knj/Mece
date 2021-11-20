@@ -22,8 +22,15 @@ export default class Game extends Phaser.Scene {
     super('game')
   }
 
-  init() {
-    this.client = new Colyseus.Client(`ws://${location.hostname}:2567`)
+  async init() {
+    try {
+      this.client = new Colyseus.Client(`wss://${location.hostname}:2567`)
+      const room = await this.client.joinOrCreate('my_room')
+      console.log(room.sessionId)
+    } catch (Error) {
+      this.client = new Colyseus.Client('ws://sky-office.herokuapp.com')
+      const room = await this.client.joinOrCreate('my_room')
+    }
   }
 
   preload() {
@@ -31,9 +38,6 @@ export default class Game extends Phaser.Scene {
   }
 
   async create() {
-    const room = await this.client.joinOrCreate('my_room')
-    console.log(room.sessionId)
-
     createCharacterAnims(this.anims)
 
     const map = this.make.tilemap({ key: 'tilemap' })
@@ -71,9 +75,8 @@ export default class Game extends Phaser.Scene {
       const item = this.items
         .get(actualX, actualY, 'chairs', chairObj.gid! - map.getTileset('chair').firstgid)
         .setDepth(actualY)
-      // custom properies[0] is the object direction set from Tiled
+      // custom properties[0] is the object direction set from Tiled
       item.itemDirection = chairObj.properties[0].value
-      item.setItemType(chairObj.type)
     })
 
     // import all other objects from Tiled map to Phaser
@@ -155,7 +158,7 @@ export default class Game extends Phaser.Scene {
 
     // set selected item and set up new dialog
     playerSelector.selectedItem = selectionItem
-    selectionItem.setDialogBox('Eキーで座ろう',　76)
+    selectionItem.setDialogBox('Press E to sit', 80)
   }
 
   update(t: number, dt: number) {
